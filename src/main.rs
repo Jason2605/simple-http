@@ -1,6 +1,6 @@
-extern crate webserver;
-use webserver::thread::ThreadPool;
-use webserver::handle_request;
+extern crate simple_http;
+use simple_http::thread::ThreadPool;
+use simple_http::handle_request;
 
 use std::net::TcpListener;
 use std::process;
