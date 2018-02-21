@@ -1,0 +1,6 @@
+[package]
+name = "simple-http"
+version = "0.1.0"
+authors = ["Jason_000 <jasonhall96686@yahoo.com>"]
+
+[dependencies]
