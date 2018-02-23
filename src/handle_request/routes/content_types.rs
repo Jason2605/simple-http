@@ -1,5 +1,4 @@
 pub fn find_content_type(file_extension: &str) -> &str {
-    println!("{}", file_extension);
     match file_extension {
         "html" => "Content-Type: text/html;",
         "png" => "Content-Type: image/png",

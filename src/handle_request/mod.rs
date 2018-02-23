@@ -29,6 +29,5 @@ fn parse_http<'a>(http_stream: &'a str) -> (&'a str, status::RequestType, bool) 
     let http_request_type = status::RequestType::from_str(http_verb);
     let http_request: Vec<&str> = http_stream.split_whitespace().collect();
     let compress = http_stream.to_lowercase().contains("accept-encoding: gzip");
-    println!("{:?}", compress);
     (http_request[1], http_request_type, compress)
 }

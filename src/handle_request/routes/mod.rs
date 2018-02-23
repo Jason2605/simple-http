@@ -11,8 +11,6 @@ pub fn find_route<'a>(route: &'a str, http_request_type: RequestType) -> respond
         return respond::read_file("404.html")
     }
 
-    println!("{:?}", http_request_type);
-
     match (route, http_request_type) {
         ("/", RequestType::GET) => respond::read_file("index.html"),
         ("/home", RequestType::GET) => respond::read_file("home.html"),
