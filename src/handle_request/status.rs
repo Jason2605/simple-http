@@ -9,6 +9,8 @@ pub enum RequestType {
     GET,
     POST,
     PUT,
+    HEAD,
+    //PRI,
     UNKNOWN,
 }
 
@@ -44,11 +46,14 @@ impl StatusCodes {
 }
 
 impl RequestType {
-    pub fn from_str(value: &'static str) -> RequestType {
+    pub fn from_str(value: &str) -> RequestType {
         match value {
             "GET" => RequestType::GET,
             "POST" => RequestType::POST,
             "PUT" => RequestType::PUT,
+            "HEAD" => RequestType::HEAD,
+
+            //"PRI" => RequestType::PRI,
             _ => panic!("Unknown value: {}", value),
         }
     }
@@ -58,6 +63,9 @@ impl RequestType {
             RequestType::GET => "GET",
             RequestType::POST => "POST",
             RequestType::PUT => "PUT",
+            RequestType::HEAD => "HEAD",
+
+            //RequestType::PRI => "PRI",
             RequestType::UNKNOWN => panic!("Ok"),
         }
     }

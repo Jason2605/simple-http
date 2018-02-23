@@ -4,7 +4,7 @@ pub mod respond;
 
 pub mod content_types;
 
-pub fn find_route<'a>(route: &'a str, http_request_type: RequestType) -> Vec<u8> {
+pub fn find_route<'a>(route: &'a str, http_request_type: RequestType) -> respond::Response {
 
     //Ensure they arent trying a directory traversal
     if route.contains("./") || route.contains("../") {

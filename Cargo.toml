@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Jason_000 <jasonhall96686@yahoo.com>"]
 
 [dependencies]
+deflate = { version = "0.7", features = ["gzip"] }

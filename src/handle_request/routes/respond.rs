@@ -5,7 +5,14 @@ use std::str;
 use handle_request::status::StatusCodes;
 use handle_request::routes::content_types;
 
-pub fn read_file(filename: &str) -> Vec<u8> {
+pub struct Response {
+    pub status_code: StatusCodes,
+    pub content_type: String,
+    pub contents: Vec<u8>,
+}
+
+pub fn read_file(filename: &str) -> Response {
+
     let mut contents = Vec::new();
     let (mut file, status_code) = match File::open(format!("html/{}", filename)) {
         Ok(f) => (f, StatusCodes::Ok),
@@ -17,26 +24,43 @@ pub fn read_file(filename: &str) -> Vec<u8> {
     } else {
         content_types::find_content_type(filename.split(".").last().unwrap())
     };
-    contents = create_headers(status_code, contents, content_type);
-    contents
+
+    let response = Response {
+        status_code,
+        content_type: String::from(content_type),
+        contents,
+    };
+
+    response
 }
 
-fn create_headers(status_code: StatusCodes, contents: Vec<u8>, content_type: &str) -> Vec<u8> {
-    let status_line = format!("HTTP/1.1 {} {} \n{}\r\n\r\n",
-        status_code.to_u16(),
-        status_code.to_str(),
-        content_type
+pub fn create_headers(response: &mut Response, compress: bool) {
+
+    let compress_header = if compress {
+        "\nContent-Encoding: gzip"
+    } else {
+        ""
+    };
+
+    let status_line = format!("HTTP/1.1 {} {} {}\n{}\r\n\r\n",
+        response.status_code.to_u16(),
+        response.status_code.to_str(),
+        compress_header,
+        response.content_type
     );
     let status_line = status_line.as_bytes();
 
     let mut return_contents = status_line.to_vec();
-    return_contents.extend(contents);
-    return_contents
+    return_contents.extend(&response.contents);
+    response.contents = return_contents;
 }
 
-pub fn json_string(contents: &str) -> Vec<u8> {
-    let json = format!("HTTP/1.1 200 OK \nContent-Type: application/json;\r\n\r\n{}", contents);
-    json.into_bytes()
+pub fn json_string(contents: &str) -> Response {
+    Response {
+        status_code: StatusCodes::Ok,
+        content_type: String::from("Content-Type: application/json;"),
+        contents: format!("HTTP/1.1 200 OK \nContent-Type: application/json;\r\n\r\n{}", contents).into_bytes(),
+    }
 }
 
 #[cfg(test)]
