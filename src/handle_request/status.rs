@@ -2,6 +2,7 @@
 pub enum StatusCodes {
     Ok,
     NotFound,
+    Unknown,
 }
 
 #[derive(Debug)]
@@ -19,7 +20,7 @@ impl StatusCodes {
         match value {
             200 => StatusCodes::Ok,
             404 => StatusCodes::NotFound,
-            _ => panic!("Unknown value: {}", value),
+            _ => StatusCodes::Unknown,
         }
     }
 
@@ -27,6 +28,7 @@ impl StatusCodes {
         match *self {
             StatusCodes::Ok => 200,
             StatusCodes::NotFound => 404,
+            StatusCodes::Unknown => 0,
         }
     }
 
@@ -34,6 +36,7 @@ impl StatusCodes {
         match *self {
             StatusCodes::Ok => "OK",
             StatusCodes::NotFound => "Not Found",
+            StatusCodes::Unknown => "Unkown",
         }
     }
 
@@ -54,7 +57,7 @@ impl RequestType {
             "HEAD" => RequestType::HEAD,
 
             //"PRI" => RequestType::PRI,
-            _ => panic!("Unknown value: {}", value),
+            _ => RequestType::UNKNOWN,
         }
     }
 
@@ -66,7 +69,7 @@ impl RequestType {
             RequestType::HEAD => "HEAD",
 
             //RequestType::PRI => "PRI",
-            RequestType::UNKNOWN => panic!("Ok"),
+            RequestType::UNKNOWN => "UNKNOWN",
         }
     }
 }

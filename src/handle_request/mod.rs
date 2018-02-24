@@ -8,19 +8,23 @@ pub mod routes;
 
 pub fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
-
     stream.read(&mut buffer).unwrap();
 
-    let http_stream = str::from_utf8(&buffer[..]).unwrap();
-    let (route, http_request_type, compress) = parse_http(http_stream);
-    let mut response = routes::find_route(route, http_request_type);
+    let http_stream = str::from_utf8(&buffer).unwrap();
 
-    if compress {
-        compress::compress(&mut response);
+    if http_stream != &"\u{0}".repeat(512)[..] {
+        let (route, http_request_type, compress) = parse_http(http_stream);
+        if http_request_type.to_str() != "UNKNOWN" {
+            let mut response = routes::find_route(route, http_request_type);
+
+            if compress {
+                compress::compress(&mut response);
+            }
+            routes::respond::create_headers(&mut response, compress);
+            stream.write(&response.contents).unwrap();
+            stream.flush().unwrap();
+        }
     }
-    routes::respond::create_headers(&mut response, compress);
-    stream.write(&response.contents).unwrap();
-    stream.flush().unwrap();
 }
 
 fn parse_http<'a>(http_stream: &'a str) -> (&'a str, status::RequestType, bool) {
