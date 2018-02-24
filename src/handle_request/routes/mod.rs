@@ -18,14 +18,3 @@ pub fn find_route<'a>(route: &'a str, http_request_type: RequestType) -> respond
         _ => respond::read_file(route),
     }
 }
-
-#[cfg(test)]
-mod tests {
-
-    use super::*;
-
-    #[test]
-    fn test_route() {
-        assert_eq!(find_route("/test", RequestType::GET), "HTTP/1.1 200 OK \nContent-Type: application/json;\r\n\r\n{\"test\": 10}");
-    }
-}

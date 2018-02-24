@@ -62,33 +62,3 @@ pub fn json_string(contents: &str) -> Response {
         contents: format!("HTTP/1.1 200 OK \nContent-Type: application/json;\r\n\r\n{}", contents).into_bytes(),
     }
 }
-
-#[cfg(test)]
-mod tests {
-
-    use super::*;
-
-    #[test]
-    fn read_a_file() {
-        let contents = "HTTP/1.1 200 OK\r\n\r\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <title>Test!</title>\n  </head>\n  <body>\n    <h1>Test!</h1>\n    <p>Hi from Rust!!!!</p>\n  </body>\n</html>\n";
-        assert_eq!(read_file("test.html"), contents);
-    }
-
-    #[test]
-    fn test_create_headers_200() {
-        let contents = String::from("test");
-        assert_eq!(create_headers(false, contents), "HTTP/1.1 200 OK\r\n\r\ntest");
-    }
-
-    #[test]
-    fn test_create_headers_404() {
-        let contents = String::from("test");
-        assert_eq!(create_headers(true, contents), "HTTP/1.1 404 NOT FOUND\r\n\r\ntest");
-    }
-
-    #[test]
-    fn test_create_json_response() {
-        let contents = String::from("{\"test\": 10}");
-        assert_eq!(json_string(contents), "HTTP/1.1 200 OK \nContent-Type: application/json;\r\n\r\n{\"test\": 10}");
-    }
-}
