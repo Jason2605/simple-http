@@ -1,6 +1,9 @@
+extern crate chrono;
+
 use std::net::TcpStream;
 use std::io::prelude::*;
 use std::str;
+use self::chrono::prelude::*;
 
 pub mod status;
 pub mod compress;
@@ -12,15 +15,22 @@ pub fn handle_connection(mut stream: TcpStream) {
 
     let http_stream = str::from_utf8(&buffer).unwrap();
 
-    if http_stream != &"\u{0}".repeat(512)[..] {
+    if http_stream != &"\u{0}".repeat(512) {
         let (route, http_request_type, compress) = parse_http(http_stream);
         if http_request_type.to_str() != "UNKNOWN" {
-            let mut response = routes::find_route(route, http_request_type);
+            println!("[{}] {:?} {} {}",
+                Utc::now().format("%d/%B/%Y %H:%M:%S"),
+                stream.peer_addr().unwrap().ip(),
+                &http_request_type.to_str(),
+                &route,
+            );
 
+            let mut response = routes::find_route(route, http_request_type);
             if compress {
                 compress::compress(&mut response);
             }
             routes::respond::create_headers(&mut response, compress);
+
             stream.write(&response.contents).unwrap();
             stream.flush().unwrap();
         }

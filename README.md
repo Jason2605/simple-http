@@ -9,7 +9,8 @@ $ cd simple-http
 $ cargo run
 ```
 
-simple-http has 3 optional arguments:
+simple-http has 4 optional arguments:
+- -h Set the host to bind too (default 127.0.0.1)
 - -p Set the port to bind too (default 8080)
 - -tp The amount of threads to spawn into the thread pool (default 4)
 - -wd The working directory to read the web files from (default html)
