@@ -56,3 +56,64 @@ fn arg_parse(args: &Vec<String>) -> (&str, &str, usize, &str) {
     (host, port, thread_count, directory)
 
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::arg_parse;
+
+    #[test]
+    fn parse_args_returns_defaults_with_no_args() {
+        let args = vec![];
+        let (host, port, threads, dir) = arg_parse(&args);
+
+        assert_eq!(host, "127.0.0.1");
+        assert_eq!(port, "8080");
+        assert_eq!(threads, 4);
+        assert_eq!(dir, "html");
+    }
+
+    #[test]
+    fn parse_args_returns_defaults_with_unknown_args() {
+        let args = vec!["--unknown", "arg", "--unknown"].into_iter().map(String::from).collect();
+        let (host, port, threads, dir) = arg_parse(&args);
+
+        assert_eq!(host, "127.0.0.1");
+        assert_eq!(port, "8080");
+        assert_eq!(threads, 4);
+        assert_eq!(dir, "html");
+    }
+
+    #[test]
+    fn parse_args_with_partially_unknown_args() {
+        let args = vec!["--unknown", "arg", "-p", "80"].into_iter().map(String::from).collect();
+        let (host, port, threads, dir) = arg_parse(&args);
+
+        assert_eq!(host, "127.0.0.1");
+        assert_eq!(port, "80");
+        assert_eq!(threads, 4);
+        assert_eq!(dir, "html");
+    }
+
+    #[test]
+    fn parse_args_with_only_known_args() {
+        let args = vec!["-p", "80", "-tp", "2"].into_iter().map(String::from).collect();
+        let (host, port, threads, dir) = arg_parse(&args);
+
+        assert_eq!(host, "127.0.0.1");
+        assert_eq!(port, "80");
+        assert_eq!(threads, 2);
+        assert_eq!(dir, "html");
+    }
+
+    #[test]
+    fn parse_args_with_all_args_specified() {
+        let args = vec!["-h", "0.0.0.0", "-p", "80", "-tp", "2", "-wd", "."].into_iter().map(String::from).collect();
+        let (host, port, threads, dir) = arg_parse(&args);
+
+        assert_eq!(host, "0.0.0.0");
+        assert_eq!(port, "80");
+        assert_eq!(threads, 2);
+        assert_eq!(dir, ".");
+    }
+}
