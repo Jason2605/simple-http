@@ -6,6 +6,7 @@ pub enum StatusCodes {
 }
 
 #[derive(Debug)]
+#[cfg_attr(test, derive(PartialEq))]
 pub enum RequestType {
     GET,
     POST,
@@ -47,6 +48,7 @@ impl StatusCodes {
         }
     }
 }
+
 
 impl RequestType {
     pub fn from_str(value: &str) -> RequestType {
