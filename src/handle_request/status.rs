@@ -1,4 +1,5 @@
 #[derive(Debug)]
+#[cfg_attr(test, derive(PartialEq))]
 pub enum StatusCodes {
     Ok,
     NotFound,
@@ -37,7 +38,7 @@ impl StatusCodes {
         match *self {
             StatusCodes::Ok => "OK",
             StatusCodes::NotFound => "Not Found",
-            StatusCodes::Unknown => "Unkown",
+            StatusCodes::Unknown => "Unknown",
         }
     }
 
