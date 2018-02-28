@@ -1,4 +1,5 @@
 #[derive(Debug)]
+#[cfg_attr(test, derive(PartialEq))]
 pub enum StatusCodes {
     Ok,
     NotFound,
@@ -6,6 +7,7 @@ pub enum StatusCodes {
 }
 
 #[derive(Debug)]
+#[cfg_attr(test, derive(PartialEq))]
 pub enum RequestType {
     GET,
     POST,
@@ -36,7 +38,7 @@ impl StatusCodes {
         match *self {
             StatusCodes::Ok => "OK",
             StatusCodes::NotFound => "Not Found",
-            StatusCodes::Unknown => "Unkown",
+            StatusCodes::Unknown => "Unknown",
         }
     }
 
@@ -47,6 +49,7 @@ impl StatusCodes {
         }
     }
 }
+
 
 impl RequestType {
     pub fn from_str(value: &str) -> RequestType {

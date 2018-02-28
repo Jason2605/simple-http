@@ -45,3 +45,55 @@ fn parse_http<'a>(http_stream: &'a str) -> (&'a str, status::RequestType, bool) 
     let compress = http_stream.to_lowercase().contains("accept-encoding: gzip");
     (http_request[1], http_request_type, compress)
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::parse_http;
+    use super::status::RequestType;
+
+    #[test]
+    fn parse_http_head_no_gzip() {
+        let (route, request_type, compress) = parse_http("HEAD /");
+
+        assert_eq!(route, "/");
+        assert_eq!(request_type, RequestType::HEAD);
+        assert_eq!(compress, false);
+    }
+
+    #[test]
+    fn parse_http_post_no_gzip() {
+        let (route, request_type, compress) = parse_http("POST /api/user/create");
+
+        assert_eq!(route, "/api/user/create");
+        assert_eq!(request_type, RequestType::POST);
+        assert_eq!(compress, false);
+    }
+
+    #[test]
+    fn parse_http_put_with_gzip() {
+        let (route, request_type, compress) = parse_http("PUT /api/user/edit \nAccept-Encoding: gzip");
+
+        assert_eq!(route, "/api/user/edit");
+        assert_eq!(request_type, RequestType::PUT);
+        assert_eq!(compress, true);
+    }
+
+    #[test]
+    fn parse_http_get_with_gzip() {
+        let (route, request_type, compress) = parse_http("GET / \nAccept-Encoding: gzip");
+
+        assert_eq!(route, "/");
+        assert_eq!(request_type, RequestType::GET);
+        assert_eq!(compress, true);
+    }
+
+    #[test]
+    fn parse_http_unknown_no_gzip() {
+        let (route, request_type, compress) = parse_http("TEAPOT /im/a/teapot");
+
+        assert_eq!(route, "/im/a/teapot");
+        assert_eq!(request_type, RequestType::UNKNOWN);
+        assert_eq!(compress, false)
+    }
+}
